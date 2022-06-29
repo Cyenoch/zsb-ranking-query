@@ -1,6 +1,6 @@
 <script setup>
 useHead({
-  title: 'Vitesse Nuxt 3',
+  title: '专升本查排名',
   link: [
     {
       rel: 'icon', type: 'image/png', href: '/nuxt.png',
