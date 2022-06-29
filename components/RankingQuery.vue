@@ -11,6 +11,8 @@ let rankingProvider = $ref<ICollageRankingProvider | null>()
 const username = $ref('')
 const password = $ref('')
 
+let loading = $ref(false)
+
 const wuitProvider = new WuitRankingProvider()
 
 onMounted(() => {
@@ -18,8 +20,17 @@ onMounted(() => {
 })
 
 const go = () => {
+  loading = true
   rankingProvider?.getRanking(username, password).then((data: any) => {
-    router.push({ path: '/ranking/result', query: { rank: data.data } })
+    if (data.code !== 200)
+      alert(data.msg)
+    else
+      router.push({ path: '/ranking/result', query: { rank: data.data } })
+  }).catch((err) => {
+    alert(`未知异常情况！\n${err.message}\n若重试后任然如此，请尝试联系开发者!`)
+    console.error(err)
+  }).finally(() => {
+    loading = false
   })
 }
 </script>
@@ -47,10 +58,13 @@ const go = () => {
       @keydown.enter="go"
     >
 
-    <div>
+    <div v-if="!loading">
       <button m-3 text-sm btn :disabled="!rankingProvider" @click="go">
         GO
       </button>
+    </div>
+    <div v-else m-3 text-sm>
+      查询中...
     </div>
   </div>
 </template>
