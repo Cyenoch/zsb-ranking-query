@@ -7,6 +7,9 @@
     "start": "node .output/server/index.mjs",
     "lint": "eslint ."
   },
+  "dependencies": {
+    "csv-parse": "^5.2.1"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^0.25.1",
     "@iconify-json/carbon": "^1.1.5",
@@ -19,8 +22,5 @@
     "nuxt": "^3.0.0-rc.4",
     "pinia": "^2.0.14",
     "typescript": "^4.7.3"
-  },
-  "dependencies": {
-    "csv-parse": "^5.2.1"
   }
 }
