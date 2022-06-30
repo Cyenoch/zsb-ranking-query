@@ -1,32 +1,36 @@
 <script setup lang="ts">
-import { WuitRankingProvider } from '~~/common/impl'
-import type { ICollageRankingProvider } from '~~/common/interface'
+import { WhcibeRankProvider, WuitRankProvider } from '~~/common/impl'
+import type { IRankProvider } from '~~/common/interface'
 
 const { data } = await useFetch('/api/pageview')
 
 const router = useRouter()
 
-let rankingProvider = $ref<ICollageRankingProvider | null>()
+// const rankProvider = $ref<IRankProvider | null>()
+// const usernameString = computed(() => rankProvider?.getUsernameString())
 
 const username = $ref('')
 const password = $ref('')
 
 let loading = $ref(false)
 
-const wuitProvider = new WuitRankingProvider()
+const providers = {
+  wuitProvider: new WuitRankProvider(),
+  whcibeProvider: new WhcibeRankProvider(),
+} as Record<string, IRankProvider>
 
-onMounted(() => {
-  rankingProvider = wuitProvider
-})
+const currentProviderKey = $ref(Object.keys(providers)[0])
+const currentProvider = computed<IRankProvider>(() => providers[currentProviderKey])
+const usernameStr = computed(() => currentProvider.value.getUsernameString())
 
 const go = () => {
   loading = true
-  rankingProvider?.getRanking(username, password).then((data: any) => {
+  currentProvider.value.getRankLevel(username, password).then((data: any) => {
     if (data.code !== 200)
-      alert(data.msg)
+      return alert(data.msg)
     else
-      router.push({ path: '/ranking/result', query: { rank: data.data } })
-  }).catch((err) => {
+      return router.push({ path: '/ranking/result', query: { rank: data.data } })
+  }).then(() => {}).catch((err) => {
     alert(`未知异常情况！\n${err.message}\n若重试后任然如此，请尝试联系开发者!`)
     console.error(err)
   }).finally(() => {
@@ -38,16 +42,16 @@ const go = () => {
 <template>
   <div text-gray:80 flex flex-col justify-center items-center>
     <select
-      id="rankingProvider" v-model="rankingProvider" placeholder="院校" autocomplete="off" p="x-4 y-2" m="t-5" w="250px" text="center"
+      id="rankingProvider" v-model="currentProviderKey" placeholder="院校" autocomplete="off" p="x-4 y-2" m="t-5" w="250px" text="center"
       bg="transparent" border="~ rounded gray-200 dark:gray-700" outline="none active:none" @keydown.enter="go"
     >
-      <option :value="wuitProvider">
-        武昌工学院
+      <option v-for="collage in Object.keys(providers)" :key="collage" :value="collage">
+        {{ providers[collage].getCollageName() }}
       </option>
     </select>
     <!--  -->
     <input
-      id="username" v-model="username" placeholder="账号" type="text" p="x-4 y-2" m="t-5" w="250px"
+      id="username" v-model="username" :placeholder="usernameStr" type="text" p="x-4 y-2" m="t-5" w="250px"
       text="center" bg="transparent" border="~ rounded gray-200 dark:gray-700" outline="none active:none"
       @keydown.enter="go"
     >
@@ -59,7 +63,7 @@ const go = () => {
     >
 
     <div v-if="!loading">
-      <button m-3 text-sm btn :disabled="!rankingProvider" @click="go">
+      <button m-3 text-sm btn @click="go">
         GO
       </button>
     </div>
