@@ -34,7 +34,7 @@ watch(breakPoints.sm, () => {
 </script>
 
 <template>
-  <div sticky bg-dark inset-t-0 inset-x-0 transition-all flex flex-row items-center px-4 py-2 b-b-2 dark:b-teal-800 shadow-md>
+  <div sticky dark:bg-dark inset-t-0 inset-x-0 transition-all flex flex-row items-center px-4 py-2 b-b-2 dark:b-teal-800 shadow-md>
     <div flex-shrink-0 text-current font-bold>
       <span>专升本排名查询</span>
     </div>
