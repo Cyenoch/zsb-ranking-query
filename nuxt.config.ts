@@ -1,5 +1,4 @@
 import { defineNuxtConfig } from 'nuxt'
-
 export default defineNuxtConfig({
   modules: [
     '@vueuse/nuxt',
@@ -13,6 +12,8 @@ export default defineNuxtConfig({
   },
   unocss: {
     preflight: true,
+  },
+  vite: {
   },
   colorMode: {
     classSuffix: '',

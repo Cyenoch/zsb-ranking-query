@@ -71,4 +71,6 @@ const go = () => {
       查询中...
     </div>
   </div>
+
+  <SecurityWarning />
 </template>
